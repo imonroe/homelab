@@ -1,0 +1,17 @@
+services:
+  uptimekuma:
+    container_name: uptimekuma
+    image: louislam/uptime-kuma:1
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Denver}
+    volumes:
+      - ./uptimekuma_data:/app/data
+    expose:
+      - 3001
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true

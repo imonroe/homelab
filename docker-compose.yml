@@ -71,3 +71,8 @@ include:
   # - compose.vaultwarden.yml   # Vaultwarden (Bitwarden-compatible password manager)
   # - compose.homeassistant.yml # Home Assistant (home automation platform)
   # - compose.pihole.yml        # Pi-hole (network-wide DNS ad blocker)
+  # - compose.plex.yml          # Plex (media server)
+  # - compose.olivetin.yml      # OliveTin (web UI for homelab ops commands)
+  # - compose.n8n.yml           # n8n (workflow automation + AI)
+  # - compose.uptimekuma.yml    # Uptime Kuma (uptime / network monitoring)
+  # - compose.navidrome.yml     # Navidrome (music streaming server)

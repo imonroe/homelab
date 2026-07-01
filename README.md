@@ -23,6 +23,11 @@ Enable any of these by uncommenting the relevant line in `docker-compose.yml` (s
 | `compose.vaultwarden.yml` | [Vaultwarden](https://github.com/dani-garcia/vaultwarden) | Bitwarden-compatible password manager |
 | `compose.homeassistant.yml` | [Home Assistant](https://www.home-assistant.io/) | Home automation platform for smart-home devices |
 | `compose.pihole.yml` | [Pi-hole](https://pi-hole.net/) | Network-wide DNS ad blocker |
+| `compose.plex.yml` | [Plex](https://www.plex.tv/) | Media server for movies, TV, and music |
+| `compose.olivetin.yml` | [OliveTin](https://www.olivetin.app/) | Web UI for safely running homelab ops commands |
+| `compose.n8n.yml` | [n8n](https://n8n.io/) | Workflow automation and AI platform |
+| `compose.uptimekuma.yml` | [Uptime Kuma](https://github.com/louislam/uptime-kuma) | Uptime and network monitoring dashboard |
+| `compose.navidrome.yml` | [Navidrome](https://www.navidrome.org/) | Subsonic-compatible music streaming server |
 
 ---
 
@@ -251,6 +256,11 @@ Per-app setup, environment variables, and configuration details live in the
 | Vaultwarden | [docs/vaultwarden.md](docs/vaultwarden.md) |
 | Home Assistant | [docs/home-assistant.md](docs/home-assistant.md) |
 | Pi-hole | [docs/pi-hole.md](docs/pi-hole.md) |
+| Plex | [docs/plex.md](docs/plex.md) |
+| OliveTin | [docs/olivetin.md](docs/olivetin.md) |
+| n8n | [docs/n8n.md](docs/n8n.md) |
+| Uptime Kuma | [docs/uptimekuma.md](docs/uptimekuma.md) |
+| Navidrome | [docs/navidrome.md](docs/navidrome.md) |
 
 ---
 

@@ -1,0 +1,27 @@
+services:
+  n8n:
+    container_name: n8n
+    image: docker.n8n.io/n8nio/n8n:latest
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Denver}
+      GENERIC_TIMEZONE: ${TZ:-America/Denver}
+      # Public hostname / URL — set these to your proxied domain in .env
+      N8N_HOST: ${N8N_HOST:-localhost}
+      N8N_PROTOCOL: ${N8N_PROTOCOL:-https}
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL:-}
+      # Number of reverse proxies in front of n8n (NPM = 1)
+      N8N_PROXY_HOPS: ${N8N_PROXY_HOPS:-1}
+      N8N_RUNNERS_ENABLED: "true"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+    volumes:
+      # Owned by UID 1000 (the container's "node" user) — see docs/n8n.md
+      - ./n8n_data:/home/node/.n8n
+    expose:
+      - 5678
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true

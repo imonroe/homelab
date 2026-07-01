@@ -1,0 +1,28 @@
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker:latest
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Denver}
+      # Reuses the shared PUID/PGID from .env (empty = image default)
+      PLEX_UID: ${PUID:-}
+      PLEX_GID: ${PGID:-}
+      # One-time claim token from https://www.plex.tv/claim (valid ~4 minutes)
+      PLEX_CLAIM: ${PLEX_CLAIM:-}
+      # Required for bridge networking: the URL(s) clients reach the server on,
+      # e.g. https://plex.example.com:443
+      ADVERTISE_IP: ${PLEX_ADVERTISE_IP:-}
+    volumes:
+      - ./plex_data/config:/config
+      - ./plex_data/transcode:/transcode
+      # Point this at your media library (read-only)
+      - ${PLEX_MEDIA_DIR:-./plex_media}:/data:ro
+    expose:
+      - 32400
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
