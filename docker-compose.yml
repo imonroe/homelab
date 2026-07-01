@@ -1,0 +1,56 @@
+services:
+  nginxproxymanager:
+    image: 'docker.io/jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '8100:80'
+      - '81:81'
+      - '8143:443'
+    volumes:
+      - ./nginx_proxy_manager_data:/data
+      - ./nginx_proxy_manager_data/letsencrypt:/etc/letsencrypt
+      - ./nginx_proxy_manager_data/nginx/snippets:/config/nginx/snippets
+      - ./nginx_proxy_manager_data/nginx/site-confs:/config/nginx/site-confs
+    environment:
+      TZ: America/Denver
+    networks:
+      - nginx_proxy_manager_default
+  authelia:
+    image: authelia/authelia
+    volumes:
+      - ./nginx_proxy_manager_data/authelia_config:/config
+    ports:
+      - 9091:9091
+    restart: unless-stopped
+    healthcheck:
+      disable: true
+    environment:
+      - TZ=America/Denver
+    depends_on:
+      - redis
+  redis:
+    image: redis:alpine
+    volumes:
+      - ./redis:/data
+    expose:
+      - 6379
+    restart: unless-stopped
+    environment:
+      - TZ=America/Denver
+  portainer: 
+    container_name: Portainer
+    image: portainer/portainer-ce:latest
+    restart: always
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "9000:9000"
+    environment:
+    #  - VIRTUAL_HOST=fqdn behind proxy
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./portainer_data:/data
+networks:
+  nginx_proxy_manager_default:
+    external: true

@@ -1,0 +1,11 @@
+# local environment
+.env
+
+# runtime data with sensitive content
+nginx_proxy_manager_data/letsencrypt/*
+nginx_proxy_manager_data/authelia_config/*
+portainer_data/*
+redis/
+
+# keep placeholder files
+!**/.gitkeep
