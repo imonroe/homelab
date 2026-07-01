@@ -1,0 +1,23 @@
+services:
+  navidrome:
+    container_name: navidrome
+    image: deluan/navidrome:latest
+    restart: unless-stopped
+    # Runs as the shared PUID/PGID (defaults to 1000); must own ./navidrome_data
+    user: ${PUID:-1000}:${PGID:-1000}
+    environment:
+      TZ: ${TZ:-America/Denver}
+      ND_MUSICFOLDER: /music
+      ND_DATAFOLDER: /data
+    volumes:
+      - ./navidrome_data:/data
+      # Point this at your music library (read-only)
+      - ${NAVIDROME_MUSIC_DIR:-./navidrome_music}:/music:ro
+    expose:
+      - 4533
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true

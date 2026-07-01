@@ -1,0 +1,20 @@
+services:
+  olivetin:
+    container_name: olivetin
+    image: jamesread/olivetin:latest
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Denver}
+    volumes:
+      - ./olivetin_data:/config
+      # Uncomment to let OliveTin actions control Docker on the host.
+      # Prefer a socket-proxy in production — see docs/olivetin.md.
+      # - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - 1337
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
