@@ -1,0 +1,27 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    restart: unless-stopped
+    ports:
+      # DNS — published on the host so LAN clients can use Pi-hole as their resolver
+      - "53:53/tcp"
+      - "53:53/udp"
+    environment:
+      TZ: America/Denver
+      # Web admin / API password (set PIHOLE_WEBPASSWORD in .env)
+      FTLCONF_webserver_api_password: ${PIHOLE_WEBPASSWORD}
+      # Required when Pi-hole runs on a Docker bridge network
+      FTLCONF_dns_listeningMode: 'ALL'
+      # Upstream resolvers Pi-hole forwards allowed queries to (semicolon-delimited)
+      FTLCONF_dns_upstreams: ${PIHOLE_DNS_UPSTREAMS:-1.1.1.1;1.0.0.1}
+    volumes:
+      - ./pihole_data:/etc/pihole
+    expose:
+      - 80
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true
