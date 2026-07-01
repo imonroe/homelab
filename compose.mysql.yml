@@ -1,0 +1,27 @@
+services:
+  mysql:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-homelab}
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      - mysql_internal
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    networks:
+      - mysql_internal
+      - nginx_proxy_manager_default
+
+networks:
+  mysql_internal:
+  nginx_proxy_manager_default:
+    external: true

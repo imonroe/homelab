@@ -1,3 +1,5 @@
+# Homelab in a Box
+# Basic services for hosting other containerized applications
 services:
   nginxproxymanager:
     image: 'docker.io/jc21/nginx-proxy-manager:latest'
@@ -54,3 +56,11 @@ services:
 networks:
   nginx_proxy_manager_default:
     external: true
+# The following are optional services you may want to enable.
+# Consult the documentation for each to understand what may 
+# need to be configured for any particular service.
+# Add additional services/stacks here as well to keep everything in 
+# one place.
+include:
+  # - compose.mysql.yml        # MySQL 8 + Adminer
+  # - compose.vaultwarden.yml  # Vaultwarden (Bitwarden-compatible password manager)
