@@ -71,6 +71,17 @@ cp .env.example .env
 
 Open `.env` in a text editor and update any values marked `changeme`.
 
+#### Shared settings
+
+Some values are shared by every service and live at the top of `.env`:
+
+| Variable | Purpose |
+|---|---|
+| `TZ` | Timezone applied to all containers (defaults to `America/Denver`). See the [tz database list](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones). |
+| `PUID` / `PGID` | User/group IDs for services that support dropping root privileges. Only Authelia uses these in the current stack; leave them empty to keep image defaults. |
+
+Every compose file references these with a fallback (e.g. `${TZ:-America/Denver}`), so the stack still starts even if you don't create a `.env`.
+
 ---
 
 ## Getting Started

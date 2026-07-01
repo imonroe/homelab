@@ -14,7 +14,7 @@ services:
       - ./nginx_proxy_manager_data/nginx/snippets:/config/nginx/snippets
       - ./nginx_proxy_manager_data/nginx/site-confs:/config/nginx/site-confs
     environment:
-      TZ: America/Denver
+      TZ: ${TZ:-America/Denver}
     networks:
       - nginx_proxy_manager_default
   authelia:
@@ -27,7 +27,11 @@ services:
     healthcheck:
       disable: true
     environment:
-      - TZ=America/Denver
+      - TZ=${TZ:-America/Denver}
+      # PUID/PGID drop privileges from root. Leave PUID/PGID empty in .env to
+      # keep Authelia's image default. Only Authelia uses these in this stack.
+      - PUID=${PUID:-}
+      - PGID=${PGID:-}
     depends_on:
       - redis
   redis:
@@ -38,8 +42,8 @@ services:
       - 6379
     restart: unless-stopped
     environment:
-      - TZ=America/Denver
-  portainer: 
+      - TZ=${TZ:-America/Denver}
+  portainer:
     container_name: Portainer
     image: portainer/portainer-ce:latest
     restart: always
@@ -48,6 +52,7 @@ services:
     ports:
       - "9000:9000"
     environment:
+      - TZ=${TZ:-America/Denver}
     #  - VIRTUAL_HOST=fqdn behind proxy
     volumes:
       - /etc/localtime:/etc/localtime:ro
