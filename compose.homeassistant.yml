@@ -1,0 +1,17 @@
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    restart: unless-stopped
+    environment:
+      TZ: America/Denver
+    volumes:
+      - ./homeassistant_data:/config
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - 8123
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true

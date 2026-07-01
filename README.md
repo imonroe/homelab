@@ -21,6 +21,7 @@ Enable any of these by uncommenting the relevant line in `docker-compose.yml` (s
 |---|---|---|
 | `compose.mysql.yml` | MySQL 8 + Adminer | General-purpose database server with a web-based admin UI |
 | `compose.vaultwarden.yml` | [Vaultwarden](https://github.com/dani-garcia/vaultwarden) | Bitwarden-compatible password manager |
+| `compose.homeassistant.yml` | [Home Assistant](https://www.home-assistant.io/) | Home automation platform for smart-home devices |
 
 ---
 
@@ -236,6 +237,7 @@ Per-app setup, environment variables, and configuration details live in the
 | Portainer | [docs/portainer.md](docs/portainer.md) |
 | MySQL + Adminer | [docs/mysql.md](docs/mysql.md) |
 | Vaultwarden | [docs/vaultwarden.md](docs/vaultwarden.md) |
+| Home Assistant | [docs/home-assistant.md](docs/home-assistant.md) |
 
 ---
 
