@@ -226,59 +226,16 @@ docker compose up -d
 
 ## App-Specific Configuration
 
-### Nginx Proxy Manager
+Per-app setup, environment variables, and configuration details live in the
+[`docs/`](docs/) directory:
 
-- Admin UI runs on port **81**
-- HTTP traffic enters on port **8100** (mapped from 80 inside the container)
-- HTTPS traffic enters on port **8143** (mapped from 443)
-- On a public server, make sure ports **80** and **443** on your router/firewall forward to ports **8100** and **8143** on your server
-
-### Authelia
-
-Authelia's configuration lives in `./nginx_proxy_manager_data/authelia_config/`. The key files are:
-
-- `configuration.yml` — main Authelia config (JWT secret, session settings, LDAP/file provider, MFA)
-- `users_database.yml` — local user accounts (when using the file authentication provider)
-
-Refer to the [Authelia documentation](https://www.authelia.com/configuration/prologue/introduction/) for full configuration options.
-
-### Portainer
-
-- First visit at `http://your-server-ip:9000` lets you create an admin account
-- Proxy it through NPM like any other service once you've set a password
-
-### MySQL + Adminer (`compose.mysql.yml`)
-
-Required env vars in `.env`:
-
-```env
-MYSQL_ROOT_PASSWORD=a-strong-password
-MYSQL_DATABASE=homelab       # optional, defaults to "homelab"
-```
-
-- MySQL is not exposed on a host port — connect to it from other containers on the `mysql_internal` network using the hostname `mysql` and port `3306`
-- Adminer (web-based database UI) should be proxied through NPM and protected by Authelia. Forward to `adminer:8080`
-
-### Vaultwarden (`compose.vaultwarden.yml`)
-
-Required env vars in `.env`:
-
-```env
-VAULTWARDEN_DOMAIN=https://vault.example.com
-VAULTWARDEN_SIGNUPS_ALLOWED=false
-VAULTWARDEN_ADMIN_TOKEN=your-secret-token
-```
-
-Generate a secure admin token:
-
-```bash
-openssl rand -base64 48
-```
-
-- In NPM, proxy `vault.example.com` to `vaultwarden:80` — **do not** add the Authelia snippets
-- Set `VAULTWARDEN_SIGNUPS_ALLOWED=true` temporarily to register your account, then set it back to `false` and restart: `docker compose restart vaultwarden`
-- The admin panel is available at `https://vault.example.com/admin` — protect this URL with a strong `ADMIN_TOKEN`
-- Vaultwarden **requires HTTPS** to function; always proxy it through NPM with SSL enabled
+| App | Documentation |
+|---|---|
+| Nginx Proxy Manager | [docs/nginx-proxy-manager.md](docs/nginx-proxy-manager.md) |
+| Authelia | [docs/authelia.md](docs/authelia.md) |
+| Portainer | [docs/portainer.md](docs/portainer.md) |
+| MySQL + Adminer | [docs/mysql.md](docs/mysql.md) |
+| Vaultwarden | [docs/vaultwarden.md](docs/vaultwarden.md) |
 
 ---
 
