@@ -28,6 +28,7 @@ Enable any of these by uncommenting the relevant line in `docker-compose.yml` (s
 | `compose.n8n.yml` | [n8n](https://n8n.io/) | Workflow automation and AI platform |
 | `compose.uptimekuma.yml` | [Uptime Kuma](https://github.com/louislam/uptime-kuma) | Uptime and network monitoring dashboard |
 | `compose.navidrome.yml` | [Navidrome](https://www.navidrome.org/) | Subsonic-compatible music streaming server |
+| `compose.homepage.yml` | [Homepage](https://gethomepage.dev/) | Dashboard with automatic Docker service discovery |
 
 ---
 
@@ -261,6 +262,7 @@ Per-app setup, environment variables, and configuration details live in the
 | n8n | [docs/n8n.md](docs/n8n.md) |
 | Uptime Kuma | [docs/uptimekuma.md](docs/uptimekuma.md) |
 | Navidrome | [docs/navidrome.md](docs/navidrome.md) |
+| Homepage | [docs/homepage.md](docs/homepage.md) |
 
 ---
 

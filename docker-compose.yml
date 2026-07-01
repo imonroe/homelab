@@ -15,6 +15,12 @@ services:
       - ./nginx_proxy_manager_data/nginx/site-confs:/config/nginx/site-confs
     environment:
       TZ: ${TZ:-America/Denver}
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Nginx Proxy Manager
+      - homepage.icon=nginx-proxy-manager.png
+      - homepage.href=https://npm.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Reverse proxy and SSL
     networks:
       - nginx_proxy_manager_default
   authelia:
@@ -32,6 +38,12 @@ services:
       # keep Authelia's image default. Only Authelia uses these in this stack.
       - PUID=${PUID:-}
       - PGID=${PGID:-}
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Authelia
+      - homepage.icon=authelia.png
+      - homepage.href=https://auth.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=SSO and 2FA portal
     depends_on:
       - redis
   redis:
@@ -58,6 +70,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer_data:/data
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Portainer
+      - homepage.icon=portainer.png
+      - homepage.href=https://portainer.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Docker management UI
 networks:
   nginx_proxy_manager_default:
     external: true
@@ -76,3 +94,4 @@ include:
   # - compose.n8n.yml           # n8n (workflow automation + AI)
   # - compose.uptimekuma.yml    # Uptime Kuma (uptime / network monitoring)
   # - compose.navidrome.yml     # Navidrome (music streaming server)
+  # - compose.homepage.yml      # Homepage (dashboard with service discovery)

@@ -9,6 +9,12 @@ services:
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 8123
+    labels:
+      - homepage.group=Smart Home
+      - homepage.name=Home Assistant
+      - homepage.icon=home-assistant.png
+      - homepage.href=https://hass.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Home automation platform
     networks:
       - nginx_proxy_manager_default
 

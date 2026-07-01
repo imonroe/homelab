@@ -9,6 +9,12 @@ services:
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
     volumes:
       - ./vaultwarden_data:/data
+    labels:
+      - homepage.group=Security
+      - homepage.name=Vaultwarden
+      - homepage.icon=vaultwarden.png
+      - homepage.href=https://vault.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Password manager
     networks:
       - nginx_proxy_manager_default
 

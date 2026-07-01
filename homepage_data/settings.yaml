@@ -1,0 +1,7 @@
+---
+# Homepage settings — https://gethomepage.dev/configs/settings/
+title: Homelab
+headerStyle: clean
+# Groups are created automatically from the homepage.group labels discovered
+# on your containers. Add a `layout:` block here if you want to control their
+# order or columns.

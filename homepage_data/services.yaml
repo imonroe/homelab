@@ -1,0 +1,6 @@
+---
+# Services are discovered automatically from the homepage.* labels defined on
+# the containers in docker-compose.yml and the compose.*.yml files, so this
+# file can stay empty. Add manually-defined services here if you want to show
+# something that isn't a labelled container on this host.
+# https://gethomepage.dev/configs/services/

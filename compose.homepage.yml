@@ -1,0 +1,31 @@
+services:
+  homepage:
+    container_name: homepage
+    image: ghcr.io/gethomepage/homepage:latest
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Denver}
+      # Required to serve the dashboard on any host other than localhost.
+      # Comma-separated, no spaces, include the port if used. Set this to your
+      # dashboard's domain in .env (e.g. home.example.com). '*' disables the
+      # check (not recommended).
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS:-localhost:3000}
+    volumes:
+      - ./homepage_data:/app/config
+      # Read-only Docker socket enables automatic service discovery from the
+      # homepage.* labels on the other containers in this stack.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    expose:
+      - 3000
+    labels:
+      - homepage.group=Infrastructure
+      - homepage.name=Homepage
+      - homepage.icon=homepage.png
+      - homepage.href=https://home.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=This dashboard
+    networks:
+      - nginx_proxy_manager_default
+
+networks:
+  nginx_proxy_manager_default:
+    external: true

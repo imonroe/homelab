@@ -12,6 +12,12 @@ services:
       # - /var/run/docker.sock:/var/run/docker.sock
     expose:
       - 1337
+    labels:
+      - homepage.group=Ops
+      - homepage.name=OliveTin
+      - homepage.icon=olivetin.png
+      - homepage.href=https://ops.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Run predefined ops commands
     networks:
       - nginx_proxy_manager_default
 

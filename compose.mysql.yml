@@ -19,6 +19,12 @@ services:
     environment:
       TZ: ${TZ:-America/Denver}
       ADMINER_DEFAULT_SERVER: mysql
+    labels:
+      - homepage.group=Databases
+      - homepage.name=Adminer
+      - homepage.icon=adminer.png
+      - homepage.href=https://adminer.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Database admin UI
     networks:
       - mysql_internal
       - nginx_proxy_manager_default
