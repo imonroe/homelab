@@ -62,5 +62,6 @@ networks:
 # Add additional services/stacks here as well to keep everything in 
 # one place.
 include:
-  # - compose.mysql.yml        # MySQL 8 + Adminer
-  # - compose.vaultwarden.yml  # Vaultwarden (Bitwarden-compatible password manager)
+  # - compose.mysql.yml         # MySQL 8 + Adminer
+  # - compose.vaultwarden.yml   # Vaultwarden (Bitwarden-compatible password manager)
+  # - compose.homeassistant.yml # Home Assistant (home automation platform)
