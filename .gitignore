@@ -7,5 +7,8 @@ nginx_proxy_manager_data/authelia_config/*
 portainer_data/*
 redis/
 
+# Homepage writes runtime logs into its config dir; keep the checked-in YAML
+homepage_data/logs/
+
 # keep placeholder files
 !**/.gitkeep

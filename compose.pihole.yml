@@ -19,6 +19,12 @@ services:
       - ./pihole_data:/etc/pihole
     expose:
       - 80
+    labels:
+      - homepage.group=Network
+      - homepage.name=Pi-hole
+      - homepage.icon=pi-hole.png
+      - homepage.href=https://pihole.${HOMELAB_DOMAIN:-localhost}/admin
+      - homepage.description=Network-wide DNS ad blocker
     networks:
       - nginx_proxy_manager_default
 

@@ -1,0 +1,9 @@
+---
+# Bookmarks — https://gethomepage.dev/configs/bookmarks/
+- Homelab:
+    - Homepage Docs:
+        - abbr: HP
+          href: https://gethomepage.dev/
+    - This Repo:
+        - abbr: GH
+          href: https://github.com/imonroe/homelab

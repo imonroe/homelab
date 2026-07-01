@@ -15,6 +15,12 @@ services:
       - ${NAVIDROME_MUSIC_DIR:-./navidrome_music}:/music:ro
     expose:
       - 4533
+    labels:
+      - homepage.group=Media
+      - homepage.name=Navidrome
+      - homepage.icon=navidrome.png
+      - homepage.href=https://music.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Music streaming server
     networks:
       - nginx_proxy_manager_default
 

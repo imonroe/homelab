@@ -20,6 +20,12 @@ services:
       - ${PLEX_MEDIA_DIR:-./plex_media}:/data:ro
     expose:
       - 32400
+    labels:
+      - homepage.group=Media
+      - homepage.name=Plex
+      - homepage.icon=plex.png
+      - homepage.href=https://plex.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Media server
     networks:
       - nginx_proxy_manager_default
 

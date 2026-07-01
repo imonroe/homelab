@@ -1,0 +1,6 @@
+# Connects Homepage to the host Docker socket so it can automatically discover
+# services from the homepage.* labels on your containers.
+# The socket is mounted read-only in compose.homepage.yml.
+# https://gethomepage.dev/configs/docker/
+my-docker:
+  socket: /var/run/docker.sock

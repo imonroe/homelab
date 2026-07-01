@@ -19,6 +19,12 @@ services:
       - ./n8n_data:/home/node/.n8n
     expose:
       - 5678
+    labels:
+      - homepage.group=Automation
+      - homepage.name=n8n
+      - homepage.icon=n8n.png
+      - homepage.href=https://n8n.${HOMELAB_DOMAIN:-localhost}
+      - homepage.description=Workflow automation and AI
     networks:
       - nginx_proxy_manager_default
 
