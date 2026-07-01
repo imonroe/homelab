@@ -3,6 +3,7 @@ services:
     image: vaultwarden/server:latest
     restart: unless-stopped
     environment:
+      TZ: ${TZ:-America/Denver}
       DOMAIN: ${VAULTWARDEN_DOMAIN}
       SIGNUPS_ALLOWED: ${VAULTWARDEN_SIGNUPS_ALLOWED:-false}
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}

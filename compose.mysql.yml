@@ -3,6 +3,7 @@ services:
     image: mysql:8
     restart: unless-stopped
     environment:
+      TZ: ${TZ:-America/Denver}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-homelab}
     volumes:
@@ -16,6 +17,7 @@ services:
     image: adminer
     restart: unless-stopped
     environment:
+      TZ: ${TZ:-America/Denver}
       ADMINER_DEFAULT_SERVER: mysql
     networks:
       - mysql_internal

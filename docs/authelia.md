@@ -17,6 +17,15 @@ The key files are:
 Refer to the [Authelia documentation](https://www.authelia.com/configuration/prologue/introduction/)
 for full configuration options.
 
+## Running as a non-root user
+
+Authelia's container can drop from root to a specific user/group via the `PUID`
+and `PGID` environment variables, which are sourced from the shared values in
+`.env` (see [Shared settings](../README.md#shared-settings)). Leave them empty
+to use the image default. If you set them, make sure the
+`./nginx_proxy_manager_data/authelia_config/` directory is owned by that
+UID/GID, or Authelia won't be able to read its config.
+
 ## Protecting an app with Authelia
 
 For apps that don't have their own login (like Adminer), add these lines under

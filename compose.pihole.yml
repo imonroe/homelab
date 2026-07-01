@@ -8,7 +8,7 @@ services:
       - "53:53/tcp"
       - "53:53/udp"
     environment:
-      TZ: America/Denver
+      TZ: ${TZ:-America/Denver}
       # Web admin / API password (set PIHOLE_WEBPASSWORD in .env)
       FTLCONF_webserver_api_password: ${PIHOLE_WEBPASSWORD}
       # Required when Pi-hole runs on a Docker bridge network
