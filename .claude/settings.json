@@ -1,7 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "mcp__mem0-remote__search_memories"
-    ]
-  }
-}
