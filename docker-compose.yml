@@ -65,3 +65,4 @@ include:
   # - compose.mysql.yml         # MySQL 8 + Adminer
   # - compose.vaultwarden.yml   # Vaultwarden (Bitwarden-compatible password manager)
   # - compose.homeassistant.yml # Home Assistant (home automation platform)
+  # - compose.pihole.yml        # Pi-hole (network-wide DNS ad blocker)
