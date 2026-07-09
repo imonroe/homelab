@@ -15,6 +15,10 @@ services:
       - homepage.icon=vaultwarden.png
       - homepage.href=https://vault.${HOMELAB_DOMAIN:-localhost}
       - homepage.description=Password manager
+      # Stop Vaultwarden briefly during backups so its SQLite database is
+      # captured in a consistent state. Only takes effect when
+      # compose.backup.yml is enabled; inert otherwise.
+      - docker-volume-backup.stop-during-backup=true
     networks:
       - nginx_proxy_manager_default
 

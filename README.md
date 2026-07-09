@@ -29,6 +29,7 @@ Enable any of these by uncommenting the relevant line in `docker-compose.yml` (s
 | `compose.uptimekuma.yml` | [Uptime Kuma](https://github.com/louislam/uptime-kuma) | Uptime and network monitoring dashboard |
 | `compose.navidrome.yml` | [Navidrome](https://www.navidrome.org/) | Subsonic-compatible music streaming server |
 | `compose.homepage.yml` | [Homepage](https://gethomepage.dev/) | Dashboard with automatic Docker service discovery |
+| `compose.backup.yml` | [docker-volume-backup](https://github.com/offen/docker-volume-backup) | Scheduled, encrypted, rotating backups with off-box copies |
 
 ---
 
@@ -240,6 +241,30 @@ docker compose down
 docker compose pull
 docker compose up -d
 ```
+
+### Back up your data
+
+Backups run as a scheduled companion container
+([offen/docker-volume-backup](https://github.com/offen/docker-volume-backup))
+defined in `compose.backup.yml`. It archives your service data on a schedule,
+encrypts it, rotates old archives, and can push a copy off-box to S3/WebDAV/SSH.
+
+Enable it like any other optional app — uncomment its line in the `include:`
+block and set a few values in `.env`:
+
+```bash
+BACKUP_CRON_EXPRESSION=@daily     # when backups run
+BACKUP_RETENTION_DAYS=7           # prune archives older than this
+BACKUP_GPG_PASSPHRASE=…           # encrypt archives (they contain secrets!)
+```
+
+```bash
+docker compose up -d
+```
+
+Archives land in `./backups/` and the container schedules itself — no host cron
+needed. See [docs/backup.md](docs/backup.md) for off-box destinations, database
+consistency, and — most importantly — **how to restore**.
 
 ---
 

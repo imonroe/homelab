@@ -95,3 +95,4 @@ include:
   # - compose.uptimekuma.yml    # Uptime Kuma (uptime / network monitoring)
   # - compose.navidrome.yml     # Navidrome (music streaming server)
   # - compose.homepage.yml      # Homepage (dashboard with service discovery)
+  # - compose.backup.yml        # Automated encrypted backups (offen/docker-volume-backup)
