@@ -1,5 +1,7 @@
 # Homelab in a Box
 
+[![Validate compose files](https://github.com/imonroe/homelab/actions/workflows/validate.yml/badge.svg)](https://github.com/imonroe/homelab/actions/workflows/validate.yml)
+
 Go from bare metal to a fully operational self-hosted home lab in minutes. This project provides a single `docker-compose.yml` entry point that wires together a reverse proxy, authentication middleware, and a growing library of optional self-hosted applications — all pre-configured to work together.
 
 ## What's Included

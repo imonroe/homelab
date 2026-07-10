@@ -1,0 +1,124 @@
+name: Validate compose files
+
+# Compose files bitrot: images get renamed or deprecated, and a stray edit can
+# break the merged config. This workflow validates YAML syntax, the merged
+# compose config for the core stack and every optional app, and that all
+# referenced images are pullable — on every PR and push to main.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  compose-config:
+    name: YAML + compose config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Optional compose files reference required variables (e.g.
+      # MYSQL_ROOT_PASSWORD). Seeding .env from the example lets interpolation
+      # resolve, and doubles as a check that .env.example stays in sync.
+      - name: Seed .env from .env.example
+        run: cp .env.example .env
+
+      - name: Check YAML syntax
+        run: |
+          python3 -m pip install --quiet pyyaml
+          python3 - <<'PY'
+          import glob, sys, yaml
+          ok = True
+          for f in ["docker-compose.yml", *sorted(glob.glob("compose.*.yml"))]:
+              try:
+                  with open(f) as fh:
+                      list(yaml.safe_load_all(fh))
+                  print(f"  ok   {f}")
+              except yaml.YAMLError as e:
+                  ok = False
+                  print(f"  FAIL {f}: {e}")
+          sys.exit(0 if ok else 1)
+          PY
+
+      # The core stack. Optional apps are commented out in the include: block,
+      # so this validates them being skipped gracefully too.
+      - name: Validate core stack config
+        run: docker compose config --quiet
+
+      # Each optional app, merged with the base the way a user enables it.
+      - name: Validate each optional compose file
+        run: |
+          status=0
+          for f in compose.*.yml; do
+            echo "::group::$f"
+            if docker compose -f docker-compose.yml -f "$f" config --quiet; then
+              echo "  ok"
+            else
+              echo "::error file=$f::docker compose config failed for $f"
+              status=1
+            fi
+            echo "::endgroup::"
+          done
+          exit $status
+
+  image-availability:
+    name: Images are pullable
+    runs-on: ubuntu-latest
+    env:
+      # Optional: set these repo secrets to authenticate to Docker Hub and avoid
+      # anonymous pull-rate limits on shared CI runners. The job works without
+      # them; it just relies on the anonymous allowance plus retries.
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Seed .env from .env.example
+        run: cp .env.example .env
+
+      - name: Log in to Docker Hub
+        if: ${{ env.DOCKERHUB_USERNAME != '' }}
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Check every referenced image exists in its registry
+        run: |
+          set -uo pipefail
+          images="$(
+            {
+              docker compose -f docker-compose.yml config --images
+              for f in compose.*.yml; do
+                docker compose -f docker-compose.yml -f "$f" config --images
+              done
+            } 2>/dev/null | sort -u
+          )"
+          echo "Referenced images:"
+          echo "$images" | sed 's/^/  /'
+          echo
+          status=0
+          while IFS= read -r img; do
+            [ -z "$img" ] && continue
+            echo "::group::$img"
+            ok=0
+            for attempt in 1 2 3; do
+              if docker buildx imagetools inspect "$img" >/dev/null 2>&1; then
+                ok=1
+                break
+              fi
+              echo "  attempt $attempt failed; retrying…"
+              sleep $((attempt * 5))
+            done
+            if [ "$ok" -eq 1 ]; then
+              echo "  ok"
+            else
+              echo "::error::image not found or not pullable: $img"
+              status=1
+            fi
+            echo "::endgroup::"
+          done <<< "$images"
+          exit $status
