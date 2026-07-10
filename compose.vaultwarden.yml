@@ -2,6 +2,8 @@ services:
   vaultwarden:
     image: vaultwarden/server:latest
     restart: unless-stopped
+    # The Vaultwarden image ships its own HEALTHCHECK (probes the /alive
+    # endpoint), so its health is reported in `docker compose ps` as-is.
     environment:
       TZ: ${TZ:-America/Denver}
       DOMAIN: ${VAULTWARDEN_DOMAIN}

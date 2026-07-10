@@ -10,6 +10,13 @@ services:
       - ./mysql_data:/var/lib/mysql
     expose:
       - 3306
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      # First boot initialises the data directory, which can take a while.
+      start_period: 40s
     # Uncomment the label below together with the ./mysql_data mount in
     # compose.backup.yml. It stops MySQL briefly during each backup so InnoDB
     # files are captured consistently — enabling it without the mount just adds
@@ -26,6 +33,13 @@ services:
     environment:
       TZ: ${TZ:-America/Denver}
       ADMINER_DEFAULT_SERVER: mysql
+    healthcheck:
+      # Adminer serves on :8080; the php:alpine base provides BusyBox wget.
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/ || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     labels:
       - homepage.group=Databases
       - homepage.name=Adminer
