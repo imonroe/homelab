@@ -10,6 +10,13 @@ services:
       - ./mysql_data:/var/lib/mysql
     expose:
       - 3306
+    # Uncomment the label below together with the ./mysql_data mount in
+    # compose.backup.yml. It stops MySQL briefly during each backup so InnoDB
+    # files are captured consistently — enabling it without the mount just adds
+    # downtime with nothing archived. See docs/backup.md for a zero-downtime
+    # mysqldump alternative.
+    # labels:
+    #   - docker-volume-backup.stop-during-backup=true
     networks:
       - mysql_internal
 

@@ -1,6 +1,9 @@
 # local environment
 .env
 
+# backup archives (contain secrets — never commit)
+backups/
+
 # runtime data with sensitive content
 nginx_proxy_manager_data/letsencrypt/*
 nginx_proxy_manager_data/authelia_config/*

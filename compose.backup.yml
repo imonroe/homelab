@@ -1,0 +1,78 @@
+# Automated backups via offen/docker-volume-backup.
+#
+# This runs a lightweight companion container that, on a schedule, archives the
+# mounted service data directories into a single tar.gz, optionally encrypts it,
+# rotates old archives, and can push a copy off-box to S3/WebDAV/SSH/etc.
+#
+# Enable it by uncommenting `- compose.backup.yml` in docker-compose.yml, then
+# `docker compose up -d`. Configure the schedule, retention, encryption, and any
+# remote target in your .env file. See docs/backup.md for the full guide,
+# including how to restore.
+services:
+  backup:
+    image: offen/docker-volume-backup:v2
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-America/Denver}
+
+      # --- Schedule & retention ------------------------------------------------
+      # Cron expression for when backups run (default: every day at midnight).
+      BACKUP_CRON_EXPRESSION: ${BACKUP_CRON_EXPRESSION:-@daily}
+      # Delete local/remote archives older than this many days (default: 7).
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
+      # Name + prefix so pruning only ever touches this stack's own archives.
+      # {{ .Extension }} resolves to tar.gz (or tar.gz.gpg when encrypted).
+      BACKUP_FILENAME: homelab-backup-%Y-%m-%dT%H-%M-%S.{{ .Extension }}
+      BACKUP_PRUNING_PREFIX: homelab-backup-
+
+      # --- Encryption (STRONGLY recommended) -----------------------------------
+      # These archives contain secrets: Authelia's user database, the Vaultwarden
+      # vault, Let's Encrypt private keys. Set BACKUP_GPG_PASSPHRASE in .env to
+      # encrypt every archive symmetrically with GPG (adds a .gpg extension).
+      # Leave empty to store archives unencrypted (not advised for off-box copies).
+      GPG_PASSPHRASE: ${BACKUP_GPG_PASSPHRASE:-}
+
+      # --- Off-box copy (optional) ---------------------------------------------
+      # Uncomment and set these in .env to also push each archive to S3-compatible
+      # storage (AWS S3, Backblaze B2, MinIO, Filebase, …). Other backends
+      # (WebDAV, SSH/SFTP, Azure, Dropbox, Google Drive) are supported too — see
+      # docs/backup.md and the offen reference.
+      # AWS_S3_BUCKET_NAME: ${BACKUP_S3_BUCKET:-}
+      # AWS_S3_PATH: ${BACKUP_S3_PATH:-}
+      # AWS_ENDPOINT: ${BACKUP_S3_ENDPOINT:-s3.amazonaws.com}
+      # AWS_ACCESS_KEY_ID: ${BACKUP_S3_ACCESS_KEY:-}
+      # AWS_SECRET_ACCESS_KEY: ${BACKUP_S3_SECRET_KEY:-}
+
+      # --- Notifications (optional) --------------------------------------------
+      # shoutrrr URL(s) to notify on failure (set NOTIFICATION_LEVEL=info for all
+      # runs). e.g. a Slack, Discord, or SMTP URL. See docs/backup.md.
+      # NOTIFICATION_URLS: ${BACKUP_NOTIFICATION_URLS:-}
+    volumes:
+      # The Docker socket lets the backup container stop/restart containers that
+      # are labeled `docker-volume-backup.stop-during-backup` for a consistent
+      # snapshot (mounted read-only).
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Local archive destination. Archives land in ./backups on the host.
+      - ./backups:/archive
+
+      # --- Data to back up (mounted read-only under /backup) -------------------
+      # Core stack — always present:
+      - ./nginx_proxy_manager_data:/backup/nginx_proxy_manager_data:ro
+      - ./portainer_data:/backup/portainer_data:ro
+      - ./redis:/backup/redis:ro
+
+      # Optional apps — uncomment the ones you have enabled. For database-backed
+      # apps (MySQL, Vaultwarden) also uncomment the stop-during-backup label in
+      # their compose file so the files are captured consistently. Uncomment the
+      # label and the mount together — the label on its own just stops the
+      # service during backups without archiving it. See docs/backup.md.
+      # - ./mysql_data:/backup/mysql_data:ro
+      # - ./vaultwarden_data:/backup/vaultwarden_data:ro
+      # - ./homeassistant_data:/backup/homeassistant_data:ro
+      # - ./pihole_data:/backup/pihole_data:ro
+      # - ./plex_data/config:/backup/plex_data:ro
+      # - ./n8n_data:/backup/n8n_data:ro
+      # - ./navidrome_data:/backup/navidrome_data:ro
+      # - ./uptimekuma_data:/backup/uptimekuma_data:ro
+      # - ./olivetin_data:/backup/olivetin_data:ro
+      # - ./homepage_data:/backup/homepage_data:ro

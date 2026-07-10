@@ -15,6 +15,11 @@ services:
       - homepage.icon=vaultwarden.png
       - homepage.href=https://vault.${HOMELAB_DOMAIN:-localhost}
       - homepage.description=Password manager
+      # Uncomment the label below together with the ./vaultwarden_data mount in
+      # compose.backup.yml. It stops Vaultwarden briefly during each backup so
+      # its SQLite database is captured consistently — enabling it without the
+      # mount just adds downtime with nothing archived. See docs/backup.md.
+      # - docker-volume-backup.stop-during-backup=true
     networks:
       - nginx_proxy_manager_default
 
