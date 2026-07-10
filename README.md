@@ -255,7 +255,9 @@ block and set a few values in `.env`:
 ```bash
 BACKUP_CRON_EXPRESSION=@daily     # when backups run
 BACKUP_RETENTION_DAYS=7           # prune archives older than this
-BACKUP_GPG_PASSPHRASE=…           # encrypt archives (they contain secrets!)
+# Encrypt archives (they contain secrets!). Generate one with:
+#   openssl rand -base64 32
+BACKUP_GPG_PASSPHRASE=your-passphrase-here
 ```
 
 ```bash

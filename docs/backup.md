@@ -64,16 +64,22 @@ is mounted for Plex, not the transcode scratch.
 ### Consistency for databases
 
 Copying a database's files while it's mid-write can produce a corrupt archive.
-Two services in this stack ship with a `docker-volume-backup.stop-during-backup`
-label already applied, so the backup container stops them for the (few seconds)
-duration of the run and restarts them afterward:
+To avoid that, the backup container can stop a service for the (few seconds)
+duration of the run and restart it afterward, via a
+`docker-volume-backup.stop-during-backup` label. Two services ship with this
+label **commented out, ready to enable**:
 
 - **MySQL** (`compose.mysql.yml`)
 - **Vaultwarden** (`compose.vaultwarden.yml`)
 
-The labels are inert unless `compose.backup.yml` is running, so they cost you
-nothing if you don't use backups. To apply the same treatment to another app,
-add this label to its service:
+When you uncomment a service's data mount in `compose.backup.yml`, also uncomment
+the stop label in that service's compose file. Do both together: the mount
+without the label risks a mid-write copy, and the label without the mount just
+stops the service during backups without archiving anything — pure downtime for
+no gain. That's why the labels ship commented rather than active by default.
+
+To apply the same treatment to another app, add this label to its service (only
+alongside mounting its data in `compose.backup.yml`):
 
 ```yaml
     labels:
@@ -83,8 +89,8 @@ add this label to its service:
 #### Zero-downtime MySQL dump (alternative)
 
 If you'd rather not stop MySQL at all, take a logical dump instead of copying
-its files. Remove the stop label and add `archive-pre`/`archive-post` labels
-plus a shared dump volume to the `mysql` service:
+its files. Leave the stop label commented and instead add `archive-pre` /
+`archive-post` labels plus a shared dump volume to the `mysql` service:
 
 ```yaml
   mysql:
@@ -196,3 +202,11 @@ user database, and TLS private keys. Encrypt them (`BACKUP_GPG_PASSPHRASE`),
 store them somewhere access-controlled, and prefer an encrypted off-box
 destination. The `backups/` directory is git-ignored so archives are never
 committed.
+
+The backup container also mounts the Docker socket (`/var/run/docker.sock`), so
+that it can stop and restart labeled services around a run. Access to the Docker
+socket — even read-only — is effectively root on the host: anything that can talk
+to the daemon can start a privileged container and escape. Treat the backup
+container as a privileged component: only enable it if you trust the image
+(`offen/docker-volume-backup`), pin it to a specific version tag rather than
+tracking `latest` for production, and don't expose the socket more widely.

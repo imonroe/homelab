@@ -21,9 +21,9 @@ services:
       # Delete local/remote archives older than this many days (default: 7).
       BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-7}
       # Name + prefix so pruning only ever touches this stack's own archives.
+      # {{ .Extension }} resolves to tar.gz (or tar.gz.gpg when encrypted).
       BACKUP_FILENAME: homelab-backup-%Y-%m-%dT%H-%M-%S.{{ .Extension }}
       BACKUP_PRUNING_PREFIX: homelab-backup-
-      BACKUP_LATEST_SYMLINK: homelab-backup.latest.tar.gz
 
       # --- Encryption (STRONGLY recommended) -----------------------------------
       # These archives contain secrets: Authelia's user database, the Vaultwarden
@@ -62,8 +62,10 @@ services:
       - ./redis:/backup/redis:ro
 
       # Optional apps — uncomment the ones you have enabled. For database-backed
-      # apps (MySQL, Vaultwarden) also add the stop-during-backup label to their
-      # service so the files are captured consistently; see docs/backup.md.
+      # apps (MySQL, Vaultwarden) also uncomment the stop-during-backup label in
+      # their compose file so the files are captured consistently. Uncomment the
+      # label and the mount together — the label on its own just stops the
+      # service during backups without archiving it. See docs/backup.md.
       # - ./mysql_data:/backup/mysql_data:ro
       # - ./vaultwarden_data:/backup/vaultwarden_data:ro
       # - ./homeassistant_data:/backup/homeassistant_data:ro
