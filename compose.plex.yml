@@ -20,6 +20,14 @@ services:
       - ${PLEX_MEDIA_DIR:-./plex_media}:/data:ro
     expose:
       - 32400
+    healthcheck:
+      # /identity responds without authentication; the pms-docker image ships
+      # curl (used by its claim flow). Plex can take a while to come up.
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:32400/identity || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     labels:
       - homepage.group=Media
       - homepage.name=Plex

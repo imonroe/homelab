@@ -15,6 +15,13 @@ services:
       - ./nginx_proxy_manager_data/nginx/site-confs:/config/nginx/site-confs
     environment:
       TZ: ${TZ:-America/Denver}
+    healthcheck:
+      # Admin API on port 81; the jc21 image ships curl.
+      test: ["CMD-SHELL", "curl -f http://localhost:81 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
     labels:
       - homepage.group=Infrastructure
       - homepage.name=Nginx Proxy Manager
@@ -30,8 +37,9 @@ services:
     ports:
       - 9091:9091
     restart: unless-stopped
-    healthcheck:
-      disable: true
+    # The Authelia image ships its own HEALTHCHECK (probes the /api/health
+    # endpoint). It was previously disabled; leaving it enabled lets
+    # `docker compose ps` report Authelia's real health.
     environment:
       - TZ=${TZ:-America/Denver}
       # PUID/PGID drop privileges from root. Leave PUID/PGID empty in .env to
@@ -53,6 +61,12 @@ services:
     expose:
       - 6379
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     environment:
       - TZ=${TZ:-America/Denver}
   portainer:
@@ -61,6 +75,10 @@ services:
     restart: always
     security_opt:
       - no-new-privileges:true
+    # No healthcheck: the portainer-ce image is built from scratch with no
+    # shell or HTTP client (curl/wget), so a container-level healthcheck can't
+    # run inside it. Monitor Portainer's :9000 endpoint externally instead
+    # (e.g. with the optional Uptime Kuma app).
     ports:
       - "9000:9000"
     environment:

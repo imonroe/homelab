@@ -12,6 +12,9 @@ services:
   backup:
     image: offen/docker-volume-backup:v2
     restart: unless-stopped
+    # No healthcheck: this is a scheduler/companion with no long-running HTTP
+    # endpoint to probe. Watch backup outcomes via its logs or notifications
+    # (see docs/backup.md).
     environment:
       TZ: ${TZ:-America/Denver}
 

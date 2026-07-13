@@ -3,6 +3,10 @@ services:
     container_name: homepage
     image: ghcr.io/gethomepage/homepage:latest
     restart: unless-stopped
+    # The Homepage image ships its own HEALTHCHECK (wget against :3000). It
+    # sends a localhost Host header, so keep localhost:3000 in
+    # HOMEPAGE_ALLOWED_HOSTS (the default does) or the healthcheck will fail
+    # host validation.
     environment:
       TZ: ${TZ:-America/Denver}
       # Required to serve the dashboard on any host other than localhost.

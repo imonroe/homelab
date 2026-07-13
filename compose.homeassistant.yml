@@ -9,6 +9,15 @@ services:
       - /etc/localtime:/etc/localtime:ro
     expose:
       - 8123
+    healthcheck:
+      # Home Assistant serves on :8123. The official image is Alpine-based and
+      # ships BusyBox wget but not curl. First start can be slow, so allow a
+      # long start period before failures count.
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8123/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
     labels:
       - homepage.group=Smart Home
       - homepage.name=Home Assistant
